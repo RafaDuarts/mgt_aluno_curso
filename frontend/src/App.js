@@ -7,8 +7,8 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" exact component={HomePage} />
-                <Route path="/alunos/:id" component={AlunoDetailPage} />
+                <Route path="/" element={<HomePage/>} />
+                <Route path="/alunos/:id" element={<AlunoDetailPage/>} />
             </Routes>
         </Router>
     );
