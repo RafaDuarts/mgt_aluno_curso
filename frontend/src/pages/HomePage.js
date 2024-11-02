@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import AlunoTable from '../components/AlunoTable';
-import AlunoFilter from '../components/AlunoFilter';
-import { Table, Input, Button, Pagination, Tag } from 'antd';
+import { Table, Input, Button, Tag } from 'antd';
 import { SearchOutlined, UserAddOutlined } from '@ant-design/icons';
 import './HomePage.css';
 
 const HomePage = () => {
   const [searchText, setSearchText] = useState('');
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); // Estado para armazenar dados filtrados
 
   useEffect(() => {
     const fetchAlunos = async () => {
@@ -20,7 +19,7 @@ const HomePage = () => {
 
         // Associando os dados dos alunos
         const alunosAssociados = alunos.map(aluno => ({
-          key: String(aluno.id),  // '1', '2', etc.
+          id: String(aluno.id),  // '1', '2', etc.
           registrationDate: new Date(aluno.createdAt).toISOString().split('T')[0],  // Data de criação
           name: `${aluno.nome} ${aluno.sobrenome}`,  // Nome completo
           state: aluno.estado,  // Estado
@@ -28,6 +27,7 @@ const HomePage = () => {
         }));
 
         setData(alunosAssociados);
+        setFilteredData(alunosAssociados); // Inicialmente, os dados filtrados são todos os alunos
       } catch (error) {
         console.error('Erro:', error);
       }
@@ -35,6 +35,13 @@ const HomePage = () => {
 
     fetchAlunos();
   }, []);
+
+  useEffect(() => {
+    const filtered = data.filter(aluno =>
+      aluno.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredData(filtered);
+  }, [searchText, data]);
 
   const columns = [
     {
@@ -46,7 +53,9 @@ const HomePage = () => {
       title: 'Nome',
       dataIndex: 'name',
       key: 'name',
-      render: text => <a href="#">{text}</a>,
+      render: (text, aluno) => (
+        <a href={`alunos/${String(aluno.id)}`}>{text}</a>
+      ),
     },
     {
       title: 'Estado',
@@ -71,7 +80,6 @@ const HomePage = () => {
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
-    // Aqui, você pode adicionar a lógica de busca para filtrar os alunos
   };
 
   return (
@@ -85,7 +93,7 @@ const HomePage = () => {
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={handleSearch}
-          style={{ width: 1000, marginRight: 10, marginLeft: 150, marginTop: 50}}
+          style={{ width: 1000, marginRight: 10, marginLeft: 150, marginTop: 50 }}
         />
         <Button
           className="custom-button"
@@ -94,18 +102,17 @@ const HomePage = () => {
         >
           Adicionar
         </Button>
-
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={filteredData}
         pagination={{ pageSize: 5 }}
         style={{ width: 1000, marginRight: 150, marginLeft: 150, marginTop: 50 }}
         rowKey="key"
       />
       {/* <Pagination
         defaultCurrent={1}
-        total={data.length} // Usa o total de alunos carregados
+        total={filteredData.length} // Usa o total de alunos filtrados
         style={{ textAlign: 'center', marginTop: 20 }}
       /> */}
     </div>
