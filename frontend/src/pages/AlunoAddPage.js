@@ -1,60 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DeleteIcon from '@mui/icons-material/Delete';
-import './AlunoEditPage.css';
+import './AlunoAddPage.css';
 
-const AlunoEditPage = () => {
-  const { id } = useParams();
+const AlunoAddPage = () => {
   const navigate = useNavigate();
-  const [aluno, setAluno] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    const fetchAlunoDetails = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/api/alunos/${id}`);
-        if (!response.ok) {
-          throw new Error('Erro ao buscar detalhes do aluno');
-        }
-        const alunoData = await response.json();
-        setAluno(alunoData);
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    };
-
-    fetchAlunoDetails();
-  }, [id]);
+  const [aluno, setAluno] = useState({
+    nome: '',
+    sobrenome: '',
+    dataNascimento: '',
+    cpf: '',
+    genero: '',
+    email: '',
+    cep: '',
+    pais: '',
+    rua: '',
+    bairro: '',
+    numero: '',
+    complemento: '',
+    cidade: '',
+    estado: '',
+    cursos: [],
+  });
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/alunos/${id}`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:3000/api/alunos`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(aluno),
       });
       if (!response.ok) {
-        throw new Error('Erro ao salvar as alterações');
+        throw new Error('Erro ao adicionar o aluno');
       }
-      setIsEditing(false);
-      alert('Alterações salvas com sucesso!');
-    } catch (error) {
-      console.error('Erro:', error);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/alunos/${id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Erro ao deletar o aluno');
-      }
-      alert('Aluno deletado com sucesso!');
-      navigate('/'); // Redireciona para a página principal após a exclusão
+      alert('Aluno adicionado com sucesso!');
+      navigate('/'); // Redireciona para a página principal após a adição
     } catch (error) {
       console.error('Erro:', error);
     }
@@ -67,193 +48,197 @@ const AlunoEditPage = () => {
     }));
   };
 
-  if (!aluno) {
-    return <div>Carregando...</div>;
-  }
-
   return (
-    <div className="aluno-edit-page">
+    <div className="aluno-add-page">
       <header className="header">
         <IconButton onClick={() => navigate('/')} style={{ color: '#fff' }}>
           <ArrowBackIcon />
         </IconButton>
-        <h1>Gerenciador de alunos | {`${aluno.nome} ${aluno.sobrenome}`}</h1>
-        <IconButton onClick={handleDelete} style={{ color: '#fff' }}>
-          <DeleteIcon />
-        </IconButton>
+        <h1>Adicionar Aluno</h1>
       </header>
       <div style={{ paddingTop: '50px' }}>
         <form className="form">
-            <section className="personal-info">
+          <section className="personal-info">
             <h3>Informações Pessoais</h3>
             <label>
-                <span>Nome</span>
-                <input
+              <span>Nome</span>
+              <input
                 type="text"
                 value={aluno.nome}
                 onChange={(e) => handleInputChange('nome', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Sobrenome</span>
-                <input
+              <span>Sobrenome</span>
+              <input
                 type="text"
                 value={aluno.sobrenome}
                 onChange={(e) => handleInputChange('sobrenome', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Data de nascimento</span>
-                <input
+              <span>Data de nascimento</span>
+              <input
                 type="text"
                 value={aluno.dataNascimento}
                 onChange={(e) => handleInputChange('dataNascimento', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>CPF</span>
-                <input
+              <span>CPF</span>
+              <input
                 type="text"
                 value={aluno.cpf}
                 onChange={(e) => handleInputChange('cpf', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Gênero</span>
-                <input
+              <span>Gênero</span>
+              <input
                 type="text"
                 value={aluno.genero}
                 onChange={(e) => handleInputChange('genero', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Email</span>
-                <input
+              <span>Email</span>
+              <input
                 type="text"
                 value={aluno.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
-            </section>
-            <section className="location">
+          </section>
+          <section className="location">
             <h3>Localização</h3>
             <label>
-                CEP
-                <input
+              CEP
+              <input
                 type="text"
                 value={aluno.cep}
                 onChange={(e) => handleInputChange('cep', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                País
-                <input
+              País
+              <input
                 type="text"
                 value={aluno.pais}
                 onChange={(e) => handleInputChange('pais', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Rua
-                <input
+              Rua
+              <input
                 type="text"
                 value={aluno.rua}
                 onChange={(e) => handleInputChange('rua', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Bairro
-                <input
+              Bairro
+              <input
                 type="text"
                 value={aluno.bairro}
                 onChange={(e) => handleInputChange('bairro', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Número
-                <input
+              Número
+              <input
                 type="text"
                 value={aluno.numero}
                 onChange={(e) => handleInputChange('numero', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Complemento
-                <input
+              Complemento
+              <input
                 type="text"
                 value={aluno.complemento}
                 onChange={(e) => handleInputChange('complemento', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Cidade
-                <input
+              Cidade
+              <input
                 type="text"
                 value={aluno.cidade}
                 onChange={(e) => handleInputChange('cidade', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Estado
-                <input
+              Estado
+              <input
                 type="text"
                 value={aluno.estado}
                 onChange={(e) => handleInputChange('estado', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
-            </section>
-            <section className="courses">
+          </section>
+          <section className="courses">
             <h3>Cursos</h3>
+            <button
+              type="button"
+              onClick={() => {
+                setAluno((prevAluno) => ({
+                  ...prevAluno,
+                  cursos: [...prevAluno.cursos, { nome: '', dataConclusao: '' }],
+                }));
+              }}
+            >
+              Adicionar Curso
+            </button>
             {(aluno.cursos || []).map((curso, index) => (
-                <div className="course" key={index}>
+              <div className="course" key={index}>
                 <label>
-                    Nome do curso
-                    <input
+                  Nome do curso
+                  <input
                     type="text"
                     value={curso.nome}
                     onChange={(e) => {
-                        const newCursos = [...aluno.cursos];
-                        newCursos[index].nome = e.target.value;
-                        setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
+                      const newCursos = [...aluno.cursos];
+                      newCursos[index].nome = e.target.value;
+                      setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
                     }}
-                    />
+                  />
                 </label>
                 <label>
-                    Data de conclusão
-                    <input
+                  Data de conclusão
+                  <input
                     type="text"
                     value={curso.dataConclusao}
                     onChange={(e) => {
-                        const newCursos = [...aluno.cursos];
-                        newCursos[index].dataConclusao = e.target.value;
-                        setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
+                      const newCursos = [...aluno.cursos];
+                      newCursos[index].dataConclusao = e.target.value;
+                      setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
                     }}
-                    />
+                  />
                 </label>
-                </div>
+              </div>
             ))}
-            </section>
-            <button type="button" onClick={handleSave} className="save-button">
-            Salvar
-            </button>
+          </section>
+          <button type="button" onClick={handleSave} className="save-button">
+            Adicionar Aluno
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default AlunoEditPage;
+export default AlunoAddPage;
