@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Table, Input, Button, Tag } from 'antd';
 import { SearchOutlined, UserAddOutlined } from '@ant-design/icons';
 import './HomePage.css';
@@ -100,7 +101,9 @@ const HomePage = () => {
           type="dashed"
           icon={<UserAddOutlined />}
         >
-          Adicionar
+          <Link to="/alunos/add" style={{ color: 'inherit', textDecoration: 'none' }}>
+            Adicionar
+          </Link>
         </Button>
       </div>
       <Table
