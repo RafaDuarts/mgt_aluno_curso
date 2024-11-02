@@ -87,7 +87,7 @@ const HomePage = () => {
       <header className="header">
         <h1>Gerenciador de alunos</h1>
       </header>
-      <div className="search-container">
+      <div style={{ paddingTop: '50px' }} className="search-container">
         <Input
           placeholder="Buscar por aluno"
           prefix={<SearchOutlined />}
