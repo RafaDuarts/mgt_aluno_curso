@@ -57,7 +57,7 @@ const AlunoDetailPage = () => {
         <h1>Gerenciador de alunos | {`${aluno.nome} ${aluno.sobrenome}`}</h1>
         <DeleteIcon onClick={handleDelete} style={{ cursor: 'pointer', marginLeft: 'auto' }} />
       </header>
-      <div style={{ paddingTop: '80px' }}>
+      <div style={{ paddingTop: '50px' }}>
         <form className="form">
         <section className="section personal-info">
             <h3>Informações Pessoais</h3>
