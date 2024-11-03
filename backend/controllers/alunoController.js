@@ -1,5 +1,6 @@
-const { Aluno } = require('../models');
+const { Aluno, Curso } = require('../models');
 
+// Criar novo aluno
 exports.createAluno = async (req, res) => {
   try {
     const aluno = await Aluno.create(req.body);
@@ -9,18 +10,32 @@ exports.createAluno = async (req, res) => {
   }
 };
 
+// Obter todos os alunos (com cursos vinculados)
 exports.getAllAlunos = async (req, res) => {
   try {
-    const alunos = await Aluno.findAll();
+    const alunos = await Aluno.findAll({
+      include: {
+        model: Curso,
+        as: 'cursos',
+        through: { attributes: [] } // Exclui informações da tabela de junção
+      }
+    });
     res.status(200).json(alunos);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Obter aluno por ID (com cursos vinculados)
 exports.getAlunoById = async (req, res) => {
   try {
-    const aluno = await Aluno.findByPk(req.params.id);
+    const aluno = await Aluno.findByPk(req.params.id, {
+      include: {
+        model: Curso,
+        as: 'cursos',
+        through: { attributes: [] } // Exclui informações da tabela de junção
+      }
+    });
     if (!aluno) {
       return res.status(404).json({ error: 'Aluno não encontrado' });
     }
@@ -30,6 +45,7 @@ exports.getAlunoById = async (req, res) => {
   }
 };
 
+// Atualizar aluno
 exports.updateAluno = async (req, res) => {
   try {
     const aluno = await Aluno.findByPk(req.params.id);
@@ -43,6 +59,7 @@ exports.updateAluno = async (req, res) => {
   }
 };
 
+// Deletar aluno
 exports.deleteAluno = async (req, res) => {
   try {
     const aluno = await Aluno.findByPk(req.params.id);
@@ -56,40 +73,38 @@ exports.deleteAluno = async (req, res) => {
   }
 };
 
-
 // Vincular aluno a curso
 exports.linkAlunoToCurso = async (req, res) => {
-    const { alunoId, cursoId } = req.body;
-    try {
-      const aluno = await Aluno.findByPk(alunoId);
-      const curso = await Curso.findByPk(cursoId);
-      
-      if (!aluno || !curso) {
-        return res.status(404).json({ error: 'Aluno ou Curso não encontrado' });
-      }
-      
-      await aluno.addCurso(curso); // Usando a associação definida no Sequelize
-      res.status(200).json({ message: 'Aluno vinculado ao curso com sucesso' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+  const { alunoId, cursoId } = req.params;
+  try {
+    const aluno = await Aluno.findByPk(alunoId);
+    const curso = await Curso.findByPk(cursoId);
+
+    if (!aluno || !curso) {
+      return res.status(404).json({ error: 'Aluno ou Curso não encontrado' });
     }
-  };
-  
-  // Desvincular aluno de curso
-  exports.unlinkAlunoFromCurso = async (req, res) => {
-    const { alunoId, cursoId } = req.body;
-    try {
-      const aluno = await Aluno.findByPk(alunoId);
-      const curso = await Curso.findByPk(cursoId);
-  
-      if (!aluno || !curso) {
-        return res.status(404).json({ error: 'Aluno ou Curso não encontrado' });
-      }
-  
-      await aluno.removeCurso(curso); // Usando a associação definida no Sequelize
-      res.status(200).json({ message: 'Aluno desvinculado do curso com sucesso' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+
+    await aluno.addCurso(curso);
+    res.status(200).json({ message: 'Aluno vinculado ao curso com sucesso' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Desvincular aluno de curso
+exports.unlinkAlunoFromCurso = async (req, res) => {
+  const { alunoId, cursoId } = req.params;
+  try {
+    const aluno = await Aluno.findByPk(alunoId);
+    const curso = await Curso.findByPk(cursoId);
+
+    if (!aluno || !curso) {
+      return res.status(404).json({ error: 'Aluno ou Curso não encontrado' });
     }
-  };
-  
+
+    await aluno.removeCurso(curso);
+    res.status(200).json({ message: 'Aluno desvinculado do curso com sucesso' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
