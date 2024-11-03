@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import './AlunoEditPage.css';
 
 const AlunoEditPage = () => {
@@ -64,6 +66,21 @@ const AlunoEditPage = () => {
     setAluno((prevAluno) => ({
       ...prevAluno,
       [field]: value,
+    }));
+  };
+
+
+  const handleAddCurso = () => {
+    setAluno((prevAluno) => ({
+      ...prevAluno,
+      cursos: [...(prevAluno.cursos || []), { nome: '', dataConclusao: '' }],
+    }));
+  };
+
+  const handleRemoveCurso = (index) => {
+    setAluno((prevAluno) => ({
+      ...prevAluno,
+      cursos: prevAluno.cursos.filter((_, i) => i !== index),
     }));
   };
 
@@ -219,37 +236,45 @@ const AlunoEditPage = () => {
             <section className="courses">
             <h3>Cursos</h3>
             {(aluno.cursos || []).map((curso, index) => (
-                <div className="course" key={index}>
+              <div className="course" key={index}>
                 <label>
-                    Nome do curso
-                    <input
+                  Nome do curso
+                  <input
                     type="text"
                     value={curso.nome}
+                    className="input-field"
                     onChange={(e) => {
-                        const newCursos = [...aluno.cursos];
-                        newCursos[index].nome = e.target.value;
-                        setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
+                      const newCursos = [...aluno.cursos];
+                      newCursos[index].nome = e.target.value;
+                      setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
                     }}
-                    />
+                  />
                 </label>
                 <label>
-                    Data de conclusão
-                    <input
+                  Data de conclusão
+                  <input
                     type="text"
                     value={curso.dataConclusao}
+                    className="input-field"
                     onChange={(e) => {
-                        const newCursos = [...aluno.cursos];
-                        newCursos[index].dataConclusao = e.target.value;
-                        setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
+                      const newCursos = [...aluno.cursos];
+                      newCursos[index].dataConclusao = e.target.value;
+                      setAluno((prevAluno) => ({ ...prevAluno, cursos: newCursos }));
                     }}
-                    />
+                  />
                 </label>
-                </div>
+                <IconButton onClick={() => handleRemoveCurso(index)} style={{ color: '#f00' }}>
+                  <RemoveIcon />
+                </IconButton>
+              </div>
             ))}
-            </section>
-            <button type="button" onClick={handleSave} className="save-button">
+            <IconButton onClick={handleAddCurso} style={{ color: '#00f' }}>
+              <AddIcon />
+            </IconButton>
+          </section>
+          <button type="button" onClick={handleSave} className="save-button">
             Salvar
-            </button>
+          </button>
         </form>
       </div>
     </div>

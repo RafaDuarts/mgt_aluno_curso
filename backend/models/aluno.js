@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Aluno extends Model {
     /**
@@ -10,9 +8,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define a associação muitos-para-muitos entre Aluno e Curso
+      this.belongsToMany(models.Curso, {
+        through: 'AlunoCurso', // Nome da tabela intermediária
+        foreignKey: 'alunoId', // Chave estrangeira que referencia Aluno
+        otherKey: 'cursoId', // Chave estrangeira que referencia Curso
+        as: 'cursos' // Alias para acessar os cursos associados a um aluno
+      });
     }
   }
+
   Aluno.init({
     nome: DataTypes.STRING,
     sobrenome: DataTypes.STRING,
@@ -32,5 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Aluno',
   });
+
   return Aluno;
 };

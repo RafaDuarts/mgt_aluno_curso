@@ -32,13 +32,7 @@ fs
     db[model.name] = model;
   });
 
-// Definindo as associações
-const { Aluno, Curso } = db;
-
-Aluno.belongsToMany(Curso, { through: 'AlunoCurso' });
-Curso.belongsToMany(Aluno, { through: 'AlunoCurso' });
-
-// Função para criar associações
+// Chama a função `associate` de cada modelo, caso exista
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
