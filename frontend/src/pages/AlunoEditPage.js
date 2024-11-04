@@ -11,7 +11,7 @@ const AlunoEditPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [aluno, setAluno] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchAlunoDetails = async () => {
@@ -90,13 +90,6 @@ const AlunoEditPage = () => {
     }));
   };
 
-  const updateCurso = (index, nome, dataConclusao) => {
-    setAluno((prevAluno) => {
-      const newCursos = [...(prevAluno.cursos || [])];
-      newCursos[index] = { nome, dataConclusao }; // Atualiza o curso na posição correta
-      return { ...prevAluno, cursos: newCursos };
-    });
-  };
 
   if (!aluno) {
     return <div>Carregando...</div>;
@@ -280,11 +273,6 @@ const AlunoEditPage = () => {
                 <IconButton onClick={() => handleRemoveCurso(index)} style={{ color: '#f00' }}>
                   <RemoveIcon />
                 </IconButton>
-
-                {/* <IconButton onClick={() => handleAddCursoBD(index)} style={{ color: '#f00' }}>
-                  <RemoveIcon />
-                </IconButton> */}
-
               </div>
             ))}
             <IconButton onClick={handleAddCurso} style={{ color: '#00f' }}>
