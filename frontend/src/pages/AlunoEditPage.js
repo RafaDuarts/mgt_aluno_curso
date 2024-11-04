@@ -35,7 +35,13 @@ const AlunoEditPage = () => {
       const response = await fetch(`http://localhost:3000/api/alunos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(aluno),
+        body: JSON.stringify({
+          ...aluno,
+          cursos: aluno.cursos.map(curso => ({
+            nome: curso.nome,
+            dataConclusao: curso.dataConclusao
+          })),
+        }),
       });
       if (!response.ok) {
         throw new Error('Erro ao salvar as alterações');
@@ -46,6 +52,7 @@ const AlunoEditPage = () => {
       console.error('Erro:', error);
     }
   };
+   
 
   const handleDelete = async () => {
     try {
@@ -69,19 +76,26 @@ const AlunoEditPage = () => {
     }));
   };
 
-
   const handleAddCurso = () => {
     setAluno((prevAluno) => ({
       ...prevAluno,
       cursos: [...(prevAluno.cursos || []), { nome: '', dataConclusao: '' }],
     }));
-  };
+  };  
 
   const handleRemoveCurso = (index) => {
     setAluno((prevAluno) => ({
       ...prevAluno,
       cursos: prevAluno.cursos.filter((_, i) => i !== index),
     }));
+  };
+
+  const updateCurso = (index, nome, dataConclusao) => {
+    setAluno((prevAluno) => {
+      const newCursos = [...(prevAluno.cursos || [])];
+      newCursos[index] = { nome, dataConclusao }; // Atualiza o curso na posição correta
+      return { ...prevAluno, cursos: newCursos };
+    });
   };
 
   if (!aluno) {
@@ -101,139 +115,139 @@ const AlunoEditPage = () => {
       </header>
       <div style={{ paddingTop: '50px' }}>
         <form className="form">
-            <section className="personal-info">
+          <section className="personal-info">
             <h3>Informações Pessoais</h3>
             <label>
-                <span>Nome</span>
-                <input
+              <span>Nome</span>
+              <input
                 type="text"
                 value={aluno.nome}
                 onChange={(e) => handleInputChange('nome', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Sobrenome</span>
-                <input
+              <span>Sobrenome</span>
+              <input
                 type="text"
                 value={aluno.sobrenome}
                 onChange={(e) => handleInputChange('sobrenome', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Data de nascimento</span>
-                <input
+              <span>Data de nascimento</span>
+              <input
                 type="text"
                 value={aluno.dataNascimento}
                 onChange={(e) => handleInputChange('dataNascimento', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>CPF</span>
-                <input
+              <span>CPF</span>
+              <input
                 type="text"
                 value={aluno.cpf}
                 onChange={(e) => handleInputChange('cpf', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Gênero</span>
-                <input
+              <span>Gênero</span>
+              <input
                 type="text"
                 value={aluno.genero}
                 onChange={(e) => handleInputChange('genero', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                <span>Email</span>
-                <input
+              <span>Email</span>
+              <input
                 type="text"
                 value={aluno.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
-            </section>
-            <section className="location">
+          </section>
+          <section className="location">
             <h3>Localização</h3>
             <label>
-                CEP
-                <input
+              CEP
+              <input
                 type="text"
                 value={aluno.cep}
                 onChange={(e) => handleInputChange('cep', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                País
-                <input
+              País
+              <input
                 type="text"
                 value={aluno.pais}
                 onChange={(e) => handleInputChange('pais', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Rua
-                <input
+              Rua
+              <input
                 type="text"
                 value={aluno.rua}
                 onChange={(e) => handleInputChange('rua', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Bairro
-                <input
+              Bairro
+              <input
                 type="text"
                 value={aluno.bairro}
                 onChange={(e) => handleInputChange('bairro', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Número
-                <input
+              Número
+              <input
                 type="text"
                 value={aluno.numero}
                 onChange={(e) => handleInputChange('numero', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Complemento
-                <input
+              Complemento
+              <input
                 type="text"
                 value={aluno.complemento}
                 onChange={(e) => handleInputChange('complemento', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Cidade
-                <input
+              Cidade
+              <input
                 type="text"
                 value={aluno.cidade}
                 onChange={(e) => handleInputChange('cidade', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
             <label>
-                Estado
-                <input
+              Estado
+              <input
                 type="text"
                 value={aluno.estado}
                 onChange={(e) => handleInputChange('estado', e.target.value)}
                 className="input-field"
-                />
+              />
             </label>
-            </section>
-            <section className="courses">
+          </section>
+          <section className="courses">
             <h3>Cursos</h3>
             {(aluno.cursos || []).map((curso, index) => (
               <div className="course" key={index}>
@@ -266,6 +280,11 @@ const AlunoEditPage = () => {
                 <IconButton onClick={() => handleRemoveCurso(index)} style={{ color: '#f00' }}>
                   <RemoveIcon />
                 </IconButton>
+
+                {/* <IconButton onClick={() => handleAddCursoBD(index)} style={{ color: '#f00' }}>
+                  <RemoveIcon />
+                </IconButton> */}
+
               </div>
             ))}
             <IconButton onClick={handleAddCurso} style={{ color: '#00f' }}>

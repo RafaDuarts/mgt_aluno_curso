@@ -17,21 +17,22 @@ const HomePage = () => {
           throw new Error('Erro ao buscar alunos');
         }
         const alunos = await response.json();
-
+    
         const alunosAssociados = alunos.map(aluno => ({
           id: String(aluno.id),
           registrationDate: new Date(aluno.createdAt).toISOString().split('T')[0],
           name: `${aluno.nome} ${aluno.sobrenome}`,
           state: aluno.estado,
-          courses: []
+          courses: aluno.cursos ? aluno.cursos.map(curso => curso.nome) : [] // Adiciona esta linha
         }));
-
+    
         setData(alunosAssociados);
         setFilteredData(alunosAssociados);
       } catch (error) {
         console.error('Erro:', error);
       }
     };
+    
 
     fetchAlunos();
   }, []);

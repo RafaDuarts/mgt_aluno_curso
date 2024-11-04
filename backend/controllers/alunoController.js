@@ -84,6 +84,12 @@ exports.linkAlunoToCurso = async (req, res) => {
       return res.status(404).json({ error: 'Aluno ou Curso não encontrado' });
     }
 
+    // Verifica se o aluno já está vinculado ao curso
+    const isCursoLinked = await aluno.hasCurso(curso);
+    if (isCursoLinked) {
+      return res.status(400).json({ error: 'Aluno já está vinculado a este curso' });
+    }
+
     await aluno.addCurso(curso);
     res.status(200).json({ message: 'Aluno vinculado ao curso com sucesso' });
   } catch (error) {
