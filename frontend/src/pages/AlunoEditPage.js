@@ -52,7 +52,7 @@ const AlunoEditPage = () => {
       console.error('Erro:', error);
     }
   };
-   
+
 
   const handleDelete = async () => {
     try {
