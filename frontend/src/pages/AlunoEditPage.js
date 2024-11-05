@@ -7,6 +7,23 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import './AlunoEditPage.css';
 
+const fetchAddressByCEP = async (cep) => {
+  try {
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    if (!response.ok) {
+      throw new Error('CEP inválido');
+    }
+    const data = await response.json();
+    if (data.erro) {
+      alert('CEP não encontrado');
+      return;
+    }
+    return data;
+  } catch (error) {
+    console.error('Erro ao buscar CEP:', error);
+  }
+};
+
 const AlunoEditPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -53,7 +70,6 @@ const AlunoEditPage = () => {
     }
   };
 
-
   const handleDelete = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/alunos/${id}`, {
@@ -76,6 +92,23 @@ const AlunoEditPage = () => {
     }));
   };
 
+  const handleCepChange = async (e) => {
+    const cep = e.target.value;
+    if (cep.length === 8) {
+      const addressData = await fetchAddressByCEP(cep);
+      if (addressData) {
+        setAluno((prevAluno) => ({
+          ...prevAluno,
+          cep,
+          rua: addressData.logradouro || '',
+          bairro: addressData.bairro || '',
+          cidade: addressData.localidade || '',
+          estado: addressData.uf || '',
+        }));
+      }
+    }
+  };
+
   const handleAddCurso = () => {
     setAluno((prevAluno) => ({
       ...prevAluno,
@@ -89,7 +122,6 @@ const AlunoEditPage = () => {
       cursos: prevAluno.cursos.filter((_, i) => i !== index),
     }));
   };
-
 
   if (!aluno) {
     return <div>Carregando...</div>;
@@ -173,15 +205,7 @@ const AlunoEditPage = () => {
                 type="text"
                 value={aluno.cep}
                 onChange={(e) => handleInputChange('cep', e.target.value)}
-                className="input-field"
-              />
-            </label>
-            <label>
-              País
-              <input
-                type="text"
-                value={aluno.pais}
-                onChange={(e) => handleInputChange('pais', e.target.value)}
+                onBlur={handleCepChange}
                 className="input-field"
               />
             </label>
@@ -200,24 +224,6 @@ const AlunoEditPage = () => {
                 type="text"
                 value={aluno.bairro}
                 onChange={(e) => handleInputChange('bairro', e.target.value)}
-                className="input-field"
-              />
-            </label>
-            <label>
-              Número
-              <input
-                type="text"
-                value={aluno.numero}
-                onChange={(e) => handleInputChange('numero', e.target.value)}
-                className="input-field"
-              />
-            </label>
-            <label>
-              Complemento
-              <input
-                type="text"
-                value={aluno.complemento}
-                onChange={(e) => handleInputChange('complemento', e.target.value)}
                 className="input-field"
               />
             </label>

@@ -64,6 +64,32 @@ const AlunoAddPage = () => {
     }));
   };
 
+  const fetchAddressByCep = async (cep) => {
+    if (cep.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!response.ok) {
+          throw new Error('Erro ao buscar o endereço');
+        }
+        const data = await response.json();
+        if (data.erro) {
+          alert('CEP não encontrado');
+        } else {
+          setAluno((prevAluno) => ({
+            ...prevAluno,
+            rua: data.logradouro,
+            bairro: data.bairro,
+            cidade: data.localidade,
+            estado: data.uf,
+            pais: data.pais,
+          }));
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    }
+  };
+
   return (
     <div className="aluno-add-page">
       <header className="header">
@@ -138,7 +164,12 @@ const AlunoAddPage = () => {
               <input
                 type="text"
                 value={aluno.cep}
-                onChange={(e) => handleInputChange('cep', e.target.value)}
+                onChange={(e) => {
+                  handleInputChange('cep', e.target.value);
+                  if (e.target.value.length === 8) {
+                    fetchAddressByCep(e.target.value);
+                  }
+                }}
                 className="input-field"
               />
             </label>
@@ -207,7 +238,7 @@ const AlunoAddPage = () => {
             </label>
           </section>
           <section className="courses">
-          <h3>Cursos</h3>
+            <h3>Cursos</h3>
             {(aluno.cursos || []).map((curso, index) => (
               <div className="course" key={index}>
                 <label>

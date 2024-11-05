@@ -1,0 +1,39 @@
+-- Criação da tabela Alunos
+CREATE TABLE IF NOT EXISTS "Alunos" (
+    "id" SERIAL PRIMARY KEY,
+    "nome" VARCHAR(255) NOT NULL,
+    "sobrenome" VARCHAR(255) NOT NULL,
+    "dataNascimento" DATE NOT NULL,
+    "cpf" VARCHAR(255) NOT NULL UNIQUE,
+    "genero" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(255) NOT NULL UNIQUE,
+    "cep" VARCHAR(255) NOT NULL,
+    "pais" VARCHAR(255) NOT NULL,
+    "rua" VARCHAR(255) NOT NULL,
+    "bairro" VARCHAR(255) NOT NULL,
+    "numero" VARCHAR(255) NOT NULL,
+    "complemento" VARCHAR(255),
+    "cidade" VARCHAR(255) NOT NULL,
+    "estado" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Criação da tabela Cursos
+CREATE TABLE IF NOT EXISTS "Cursos" (
+    "id" SERIAL PRIMARY KEY,
+    "nome" VARCHAR(255) NOT NULL,
+    "descricao" TEXT,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Criação da tabela AlunoCursos
+CREATE TABLE IF NOT EXISTS "AlunoCursos" (
+    "dataConclusao" DATE NOT NULL,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "alunoId" INTEGER REFERENCES "Alunos" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    "cursoId" INTEGER REFERENCES "Cursos" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY ("alunoId", "cursoId")
+);
