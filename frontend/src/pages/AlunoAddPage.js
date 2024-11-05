@@ -81,7 +81,6 @@ const AlunoAddPage = () => {
             bairro: data.bairro,
             cidade: data.localidade,
             estado: data.uf,
-            pais: data.pais,
           }));
         }
       } catch (error) {
